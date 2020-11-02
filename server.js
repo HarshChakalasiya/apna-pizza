@@ -5,8 +5,10 @@ const path = require('path')
 const expressLayout = require('express-ejs-layouts')
 const PORT = process.env.PORT || 3000    // If port is availalble in node modules then use that otherwise use 3000 
 
+// Asset path
+
+app.use(express.static('public'))
 app.get('/', (req,res)=>{
-	// res.send('Hello From CHR')
 	res.render('home')
 })
 

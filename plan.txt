@@ -9,8 +9,8 @@
 
 [+] Create Express server - Create a server.js
 
-[.] Git Setup & first comit
-[.] Install Laravel Mix
+[+] Git Setup & first comit
+[+] Install Laravel Mix
 	- setup js & scss
 [.] Install Tailwind css
 [.] Create Home page using Html & css
