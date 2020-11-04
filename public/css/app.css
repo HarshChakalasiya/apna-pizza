@@ -383,3 +383,12 @@ section.login a:hover {
   padding-left: 8px !important;
 }
 
+a.link {
+  color: #FE5F1E;
+  transtion: all 0.2s ease-in-out;
+}
+
+a.link:hover {
+  color: #b23301;
+}
+
