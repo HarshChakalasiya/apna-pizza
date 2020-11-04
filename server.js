@@ -7,8 +7,10 @@ const expressLayout = require('express-ejs-layouts')
 const PORT = process.env.PORT || 3000    // If port is availalble in node modules then use that otherwise use 3000 
 const mongoose= require('mongoose')
 const session = require('express-session')
-const flash = require('express-flash')   // To send cookie    
+const flash = require('express-flash')   // To send message    
 const MongoDbStore= require('connect-mongo')(session)  // TO store cookies & sessions in db
+
+const passport = require('passport')
 // DB Connection
 
 const url = 'mongodb://localhost/pizza';
@@ -21,6 +23,8 @@ connection.once('open',()=>{
 }).catch(err=>{
 	console.log('Connection Failed');
 });
+
+
 // Session Store
 
 let mongoStore = new MongoDbStore({
@@ -40,15 +44,23 @@ app.use(session({
 	}
 }))
 
+// passport confog
+const passportInit = require('./app/config/passport')
+passportInit(passport)
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.use(flash())
 // Asset path
 
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended : false}))
 app.use(express.json())  // for fetching json data from the browser
 
 // Global Middleware
 app.use((req,res,next)=>{
 	res.locals.session = req.session
+	res.locals.user = req.user
 	next()   // Mandatory call because otherwise it reload continuesly never stop
 })
 
