@@ -50,6 +50,7 @@ if(alertMsg){
 
 // Change order status
 let statuses = document.querySelectorAll('.status_line')
+let orderes = document.querySelectorAll('.orderBox')
 let hidIn = document.querySelector('#hiddenInput') 
 let order = hidIn ? hidIn.value : null
 order = JSON.parse(order)
@@ -81,13 +82,14 @@ function updateStatus(order){
 
 }	
 
+
 updateStatus(order)
 
 // Socket
 
 let socket = io()
 
-initAdmin(socket)
+
 // Join 
 if(order){
 	socket.emit('join',`order_${order._id}`)
@@ -97,6 +99,7 @@ if(order){
 let adminAreaPath = window.location.pathname
 
 if(adminAreaPath.includes('admin')){
+	initAdmin(socket)
 	socket.emit('join','adminRoom')
 } 
 // room name = order_(order_id) unique

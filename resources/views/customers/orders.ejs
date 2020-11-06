@@ -20,10 +20,18 @@
 				<% if(orders.length) { %>
 					<% orders.forEach((order)=> { %>
 						<tr>
+						<% if (order.status === 'completed') { %>
+							<td class="border px-4 py-2"><a class="link line-through" href="/customers/orders/<%= order._id%>"><%= order._id%></a></td>
+							<td class="border px-4 py-2 line-through"><%= order.phone%></td>
+							<td class="border px-4 py-2 line-through"><%= order.address%></td>
+							<td class="border px-4 py-2 "><%= moment(order.createdAt).format('MMM DD ,  yy ---- hh:mm A') %></td>
+						<% } else { %>
+						
 							<td class="border px-4 py-2"><a class="link" href="/customers/orders/<%= order._id%>"><%= order._id%></a></td>
 							<td class="border px-4 py-2"><%= order.phone%></td>
 							<td class="border px-4 py-2"><%= order.address%></td>
 							<td class="border px-4 py-2"><%= moment(order.createdAt).format('MMM DD ,  yy ---- hh:mm A') %></td>
+						<% } %>	
 						</tr>
 					<% }) %>
 				
