@@ -11,6 +11,8 @@ const flash = require('express-flash')   // To send message
 const MongoDbStore= require('connect-mongo')(session)  // TO store cookies & sessions in db
 
 const passport = require('passport')
+
+const Emitter= require('events')
 // DB Connection
 
 const url = 'mongodb://localhost/pizza';
@@ -31,6 +33,11 @@ let mongoStore = new MongoDbStore({
 	mongooseConnection: connection,
 	collection : 'sessions'
 })
+
+// Event emitter for socket
+
+const eventEmitter = new Emitter()
+app.set('eventEmitter',eventEmitter)
 
 // Session Config
 
@@ -76,6 +83,29 @@ app.set('view engine','ejs')
 require('./routes/web')(app)
 
 
-app.listen(PORT, ()=> {
+const server = app.listen(PORT, ()=> {
 	console.log(`listening on port on ${PORT}`);
+})
+
+
+// socket
+
+const io= require('socket.io')(server)
+
+io.on('connection', (socket)=>{
+	// private rooms
+	// join
+	
+	socket.on('join',(orderId)=>{
+		socket.join(orderId)
+	})
+})
+
+
+eventEmitter.on('orderUpdated',(data)=>{
+	io.to(`order_${data.id}`).emit('orderUpdated', data)
+})
+
+eventEmitter.on('orderPlaced',(data)=>{
+	io.to('adminRoom').emit('orderPlaced',data)
 })

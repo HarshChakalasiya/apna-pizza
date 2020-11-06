@@ -26861,9 +26861,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var noty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! noty */ "./node_modules/noty/lib/noty.js");
+/* harmony import */ var noty__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(noty__WEBPACK_IMPORTED_MODULE_2__);
 
 
-function initAdmin() {
+
+function initAdmin(socket) {
   var orderTableBody = document.getElementById('orderTableBody');
   var orders = [];
   var markup;
@@ -26892,6 +26895,19 @@ function initAdmin() {
       return "\n\n\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t<td class=\"border px-4 py-2 text-green-900\">\n\t\t\t\t\t\t\t\t<p>".concat(order._id, "</p>\n\t\t\t\t\t\t\t\t<div>").concat(renderItems(order.items), "</div>\n\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t<td class=\"border px-4 py-2\">").concat(order.customerId.name, "</td>\n\t\t\t\t\t\t\t<td class=\"border px-4 py-2\">").concat(order.phone, "</td>\n\t\t\t\t\t\t\t<td class=\"border px-4 py-2\">").concat(order.address, "</td>\n\t\t\t\t\t\t\t<td class=\"border px-4 py-2\">\n\t\t\t\t\t\t\t\t<div class=\"inline-block relative w-64\">\n\t\t\t\t\t\t\t\t\t<form action=\"/admin/order/status\" method=\"post\">\n\t\t\t\t\t\t\t\t\t\t<input type=\"hidden\" name=\"orderId\" value=\"").concat(order._id, "\">\n\t\t\t\t\t\t\t\t\t\t<select name=\"status\" onchange=\"this.form.submit()\" \n\t\t\t\t\t\t\t\t\t\t\tclass=\"block appearance-none w-full bg-white border border-gray-400 \n\t\t\t\t\t\t\t\t\t\t\t hover:border-gray-500 px-4 py-2 pr-0 rounded shadow leading-tight focus:outline-none\n\t\t\t\t\t\t\t\t\t\t\t  focus:shadow-outline\">\n\t\t\t\t\t\t\t\t\t\t\t<option value=\"order_placed\"\n\t\t\t\t\t\t\t\t\t\t\t\t").concat(order.status === 'order_placed' ? 'selected' : '', " > Placed\n\t\t\t\t\t\t\t\t\t\t\t</option>  \t\n\t\t\t\t\t\t\t\t\t\t\t<option value=\"confirmed\"\n\t\t\t\t\t\t\t\t\t\t\t\t").concat(order.status === 'confirmed' ? 'selected' : '', " > Confirmed\n\t\t\t\t\t\t\t\t\t\t\t</option>  \t\n\t\t\t\t\t\t\t\t\t\t\t<option value=\"prepared\"\n\t\t\t\t\t\t\t\t\t\t\t\t").concat(order.status === 'prepared' ? 'selected' : '', " > Prepared\n\t\t\t\t\t\t\t\t\t\t\t</option>  \t\n\t\t\t\t\t\t\t\t\t\t\t<option value=\"delivered\"\n\t\t\t\t\t\t\t\t\t\t\t\t").concat(order.status === 'delivered' ? 'selected' : '', " > Delivered\n\t\t\t\t\t\t\t\t\t\t\t</option>  \t\n\t\t\t\t\t\t\t\t\t\t\t<option value=\"completed\"\n\t\t\t\t\t\t\t\t\t\t\t\t").concat(order.status === 'completed' ? 'selected' : '', " > Completed\n\t\t\t\t\t\t\t\t\t\t\t</option>  \t\n\t\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t\t</form>\n\t\t\t\t\t\t\t\t\t<div class=\"pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700\">\n    \t\t\t\t\t\t\t\t\t<svg class=\"fill-current h-4 w-4\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 20\"><path d=\"M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z\"/></svg>\n  \t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t<td class=\"border px-4 py-2\">").concat(moment__WEBPACK_IMPORTED_MODULE_1___default()(order.createdAt).format('MMM DD ,  yy ---- hh:mm A'), "</td>\n\t\t\t\t\t\t</tr>\t\t\n\t\t\t");
     }).join('');
   }
+
+  socket.on('orderPlaced', function (order) {
+    new noty__WEBPACK_IMPORTED_MODULE_2___default.a({
+      type: 'success',
+      timeout: 1000,
+      text: 'New Order Received',
+      // layout: 'bottomLeft',  for customize position
+      progressBar: false
+    }).show();
+    orders.unshift(order);
+    orderTableBody.innerHTML = '';
+    orderTableBody.innerHTML = generateMarkUp(orders);
+  });
 }
 
 /***/ }),
@@ -26910,6 +26926,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var noty__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! noty */ "./node_modules/noty/lib/noty.js");
 /* harmony import */ var noty__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(noty__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _admin__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./admin */ "./resources/js/admin.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_3__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
 
 
 
@@ -26951,9 +26976,71 @@ if (alertMsg) {
   setTimeout(function () {
     alertMsg.remove();
   }, 2000);
+} // Change order status
+
+
+var statuses = document.querySelectorAll('.status_line');
+var hidIn = document.querySelector('#hiddenInput');
+var order = hidIn ? hidIn.value : null;
+order = JSON.parse(order);
+var time = document.createElement('small');
+
+function updateStatus(order) {
+  statuses.forEach(function (status) {
+    status.classList.remove('step-completed');
+    status.classList.remove('current');
+  });
+  var stepCompleted = true;
+  statuses.forEach(function (status) {
+    var dataProp = status.dataset.status;
+
+    if (stepCompleted) {
+      status.classList.add('step-completed');
+    }
+
+    if (dataProp === order.status) {
+      stepCompleted = false;
+      time.innerText = moment__WEBPACK_IMPORTED_MODULE_3___default()(order.updatedAt).format('hh:mm A');
+      status.appendChild(time);
+
+      if (status.nextElementSibling) {
+        status.nextElementSibling.classList.add('current');
+      }
+    }
+  });
 }
 
-Object(_admin__WEBPACK_IMPORTED_MODULE_2__["initAdmin"])();
+updateStatus(order); // Socket
+
+var socket = io();
+Object(_admin__WEBPACK_IMPORTED_MODULE_2__["initAdmin"])(socket); // Join 
+
+if (order) {
+  socket.emit('join', "order_".concat(order._id));
+}
+
+var adminAreaPath = window.location.pathname;
+
+if (adminAreaPath.includes('admin')) {
+  socket.emit('join', 'adminRoom');
+} // room name = order_(order_id) unique
+
+
+socket.on('orderUpdated', function (data) {
+  var updatedOrder = _objectSpread({}, order); // copy the order object
+
+
+  updatedOrder.updatedAt = moment__WEBPACK_IMPORTED_MODULE_3___default()().format();
+  updatedOrder.status = data.status;
+  updateStatus(updatedOrder);
+  new noty__WEBPACK_IMPORTED_MODULE_1___default.a({
+    type: 'success',
+    timeout: 1000,
+    text: 'Order Updated',
+    // layout: 'bottomLeft',  for customize position
+    progressBar: false
+  }).show();
+});
 
 /***/ }),
 
