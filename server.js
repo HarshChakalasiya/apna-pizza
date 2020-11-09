@@ -16,18 +16,18 @@ const Emitter= require('events')
 // DB Connection
 
 // const url = 'mongodb://localhost/pizza';
-// mongoose.connect(process.env.MONGO_CONNECTION_URL,{ useNewUrlParser:true, useCreateIndex:true, useUnifiedTopology:true, useFindAndModify: true});
+mongoose.connect(process.env.MONGO_CONNECTION_URL,{ useNewUrlParser:true, useCreateIndex:true, useUnifiedTopology:true, useFindAndModify: true});
 
-// const connection = mongoose.connection;
+const connection = mongoose.connection;
 
-// connection.once('open',()=>{
-// 	console.log('Database Connected');
-// }).catch(err=>{
-// 	console.log('Connection Failed');
-// });
+connection.once('open',()=>{
+	console.log('Database Connected');
+}).catch(err=>{
+	console.log('Connection Failed');
+});
 
-const connectDB = require('./config/db');
-connectDB();
+// const connectDB = require('./app/config/db');
+// const connection = connectDB();
 
 
 // Session Store
